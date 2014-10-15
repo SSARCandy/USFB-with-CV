@@ -15,6 +15,7 @@
 #include "RGBpixmap.h"
 #include "Shield.h"
 #include "Enemy.h"
+#include "Bullet.h"
 using namespace std;
 
 
@@ -46,8 +47,8 @@ int				bg1X					 = 0;			// 2400 * 500
 int				bg2X					 = 0;			// 1400 * 130
 //Set pictures
 int				i						 = 0;
-RGBApixmap		pic[10];								// create two (empty) global pixmaps
-RGBApixmap		bg;
+RGBApixmap		pic[7];								// create two (empty) global pixmaps
+//RGBApixmap		bg;
 int				whichPic				 = 0;			// which pixmap to display
 //Game State
 int				gameState				 = 0;			// 0:Prestart   1:In game   2:GameOver 
@@ -57,10 +58,8 @@ int				gameState				 = 0;			// 0:Prestart   1:In game   2:GameOver
 Shield			shield;
 Enemy			enemy[5];
 //Set Bullets
-const int		bullet_width			 = 50;
-const int		bullet_height			 = 5;
-int				bulletX[10]				 = { 0 };		// At most 10 bullets on field
-int				bulletY[10]				 = { 0 };		//
+Bullet			bullet[10];
+int				bulletType				 = 0;
 int				bullet_on_field			 = 0;
 //Set Gravity
 bool			isJumping				= false;
@@ -73,6 +72,7 @@ int				picY = 400;
 int				DirectState = 0;  //0:right  1:left
 int				Gamescore				= 0;
 bool			isDead					= false;
+int				sunCounter				= 0;
 int             flashIntervalCounter	= 0;
 //bool			isFast = false;
 
@@ -118,7 +118,6 @@ void myDisplay(void)
 	//	Sleep(27);
 	//}
 
-
 	if (updateInterval > 10)
 		updateInterval = 20 - Gamescore / 10;
 
@@ -140,6 +139,18 @@ void myDisplay(void)
 		if (isDead && picY <= 100)	
 			GameOver();
 	}
+	pic[5].blendTex(10, 480, 1.5, 1.5);
+
+	//prevent player keep stay at roof
+	if (picY >= 500){
+		if (sunCounter++ > 100){
+			//GameOver();
+			whichPic = 6;
+			shield.init();
+			isDead = true;
+		}
+	}
+	else sunCounter = 0;
 
 	if (picY <= 100){
 		if (shield.isEquip){
@@ -171,17 +182,22 @@ void myDisplay(void)
 		}
 	}
 	for (int i = 0; i < bullet_on_field; i++){
+		bullet[i].animation();
 		for (int j = 0; j < 5; j++){
-			if (enemy[j].dead(bulletX[i], bulletY[i], bulletX[i] + bullet_width, bulletY[i] + bullet_height)){
-				Gamescore++;
-				bulletX[i] = bulletX[bullet_on_field-1];
-				bulletY[i] = bulletY[bullet_on_field-1];
-				bullet_on_field--;
+			if (bulletType == 1){
+  				if (enemy[j].dead(0, bullet[i].Y, 1200, bullet[i].Y + bullet[i].height)){
+					Gamescore++;
+					bullet_on_field--;
+				}
 			}
-		}		
-		glColor4f(1, 0, 0, 0);
-//		glColor3f(1.0f, 0.0f, 0.0f);
-		glRectf(bulletX[i], bulletY[i], bulletX[i] + bullet_width, bulletY[i] + bullet_height);
+			else{
+				if (enemy[j].dead(bullet[i].X, bullet[i].Y, bullet[i].X + bullet[i].width, bullet[i].Y + bullet[i].height)){
+					Gamescore++;
+					bullet[i] = bullet[bullet_on_field - 1];
+					bullet_on_field--;
+				}
+			}
+		}
 	}
 
 	//Font
@@ -190,21 +206,24 @@ void myDisplay(void)
 
 	glColor3f(1.0, 0.0, 0.0);  //set font color
 	glRasterPos2i(10, 550);    //set font start position
-	for (int i = 0; i<strlen(mss); i++) {
+	for (int i = 0; i<strlen(mss); i++) 
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, mss[i]);
-	}
+
+	glRasterPos2i(480, 10);    //set font start position
+	sprintf(mss, "1~3  to change Wepons");
+	for (int i = 0; i<strlen(mss); i++)
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, mss[i]);
 
 	glColor3f(0.0, 0.5, 0.3);  //set font color
 	glRasterPos2i(10, 10);    //set font start position
 	sprintf(mss, "Press \"Q\" to Exit");
-	for (int i = 0; i<strlen(mss); i++) {
+	for (int i = 0; i<strlen(mss); i++) 
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, mss[i]);
-	}
+	
 
 	glRasterPos2i(screenWidth - 100, 10);    //set font start position
-	for (int i = 0; i<strlen(fpsmss); i++) {
+	for (int i = 0; i<strlen(fpsmss); i++) 
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, fpsmss[i]);
-	}
 
 	if (gameState == 0)
 		PressSpaceToStart();
@@ -221,7 +240,7 @@ void GameOver(){
 	glColor3f(1.0, 0.0, 0.0);  //set font color
 	glRasterPos2i(440, 330);    //set font start position
 	for (int i = 0; i < strlen(mss); i++)  glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, mss[i]);
-	for (int i = 0; i < bullet_on_field; i++)  bulletX[i] = 1500;
+	for (int i = 0; i < bullet_on_field; i++)  bullet[i].X = 1500;
 }
 
 void PressSpaceToStart(){
@@ -231,7 +250,7 @@ void PressSpaceToStart(){
 	glColor3f(1.0, 0.0, 0.0);  //set font color
 	glRasterPos2i(465, 260);    //set font start position
 	for (int i = 0; i < strlen(mss); i++)  glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, mss[i]);
-	for (int i = 0; i < bullet_on_field; i++)  bulletX[i] = 1500;
+	for (int i = 0; i < bullet_on_field; i++)  bullet[i].X = 1500;
 }
 
 void jump(int value)
@@ -253,8 +272,7 @@ void jump(int value)
 
 void shoot(int i){
 	if (gameState == 1 && bullet_on_field < 10){
-		bulletX[bullet_on_field] = picX;
-		bulletY[bullet_on_field] = picY + 10;
+		bullet[bullet_on_field].init(picY, bulletType);
 		bullet_on_field++;
 	}
 }
@@ -276,10 +294,9 @@ void update(int i)
 	}
 
 	for (int i = 0; i < bullet_on_field; i++){
-		bulletX[i] += 15;
-		if (bulletX[i] > screenWidth){
-			bulletX[i] = bulletX[bullet_on_field-1];
-			bulletY[i] = bulletY[bullet_on_field-1];
+		//bulletX[i] += 15;
+		if (bullet[i].updatePosition(picY)){
+			bullet[i] = bullet[bullet_on_field-1];
 			bullet_on_field--;
 		}
 	}
@@ -300,6 +317,15 @@ void myKeys(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
+	case '1':
+		bulletType = 0;
+		break;
+	case '2':
+		bulletType = 1;
+		break;
+	case '3':
+		bulletType = 2;
+		break;
 	case 'Q':
 	case 'q':
 		exit(0);
@@ -366,7 +392,9 @@ void init()
 	shield.init();
 	//init enemies
 	for (int i = 0; i < 5; i++)	enemy[i].init();
-	
+	for (int i = 0; i < 10; i++){
+		bullet[i].init(picY, bulletType);
+	}
 //	isFast = false;
 }
 
@@ -389,10 +417,13 @@ int main(int argc, char **argv)
 	pic[1].readBMPFile("image/bird.bmp");  cout << '.';
 	pic[2].readBMPFile("image/bird_jump.bmp");  cout << '.';
 	pic[3].readBMPFile("image/bg1.bmp"); cout << '.';
-	pic[4].readBMPFile("image/bg2.bmp"); cout << '.' << endl;
+	pic[4].readBMPFile("image/bg2.bmp"); cout << '.';
+	pic[5].readBMPFile("image/sun1.bmp"); cout << '.';
+	pic[6].readBMPFile("image/bird_burned.bmp"); cout << '.'
+	<< endl;
 
 
-	for (int i = 0; i < 5; i++) pic[i].setChromaKey(255, 255, 255);
+	for (int i = 0; i < 7; i++) pic[i].setChromaKey(255, 255, 255);
 	for (int i = 0; i < 5; i++)	enemy[i].loadFrames();
 
 	//cout<<"Reading Backgroud........"<<endl;

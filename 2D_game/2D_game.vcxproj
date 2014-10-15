@@ -84,6 +84,7 @@
     <ClCompile Include="Shield.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="RGBpixmap.h" />
     <ClInclude Include="Shield.h" />

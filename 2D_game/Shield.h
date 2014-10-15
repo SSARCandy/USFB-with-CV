@@ -29,7 +29,7 @@ public:
 
 private:
 	bool touchTest(float x, float y);
-	RGBApixmap frames[3];
+	RGBApixmap frames;
 	int FrameIndex;
 	int width;
 	int height;

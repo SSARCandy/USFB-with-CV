@@ -38,5 +38,8 @@
     <ClInclude Include="Enemy.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

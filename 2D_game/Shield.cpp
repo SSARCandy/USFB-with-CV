@@ -6,17 +6,16 @@ Shield::Shield(){
 void Shield::init(){
 	X = rand() % 3000 + 1500;
 	Y = rand() % 300 + 100;;
-	frames[0].readBMPFile("image/es1.bmp");  cout << '.';
+	frames.readBMPFile("image/es1.bmp");  cout << '.';
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-	frames[0].setChromaKey(255, 255, 255);
+	frames.setChromaKey(255, 255, 255);
 
-	width = frames[0].w();
-	height = frames[0].h();
+	width = frames.w();
+	height = frames.h();
 	Ox = X + width / 2;
 	Oy = Y + height / 2;
-	FrameIndex = 0;
-	scale = 0;
+	scale = 1;
 	bigger = true;
 	isEquip = false;
 }
@@ -29,7 +28,7 @@ void Shield::animation(){
 		scale -= 0.01;
 		if (scale < 0.85) bigger = true;
 	}
-	frames[FrameIndex].blendTex(X, Y, scale, scale);
+	frames.blendTex(X, Y, scale, scale);
 }
 void Shield::updatePosition(int playerX, int playerY){
 	if (isEquip){
