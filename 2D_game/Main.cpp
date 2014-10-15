@@ -1,3 +1,4 @@
+
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -37,6 +38,7 @@ static void CheckError(int line)
 // Global variables for measuring time (in milli-seconds)
 int				startTime;
 int				prevTime;
+int				updateInterval			 = 20;
 //Set windows
 int				screenWidth				 = 1200;
 int				screenHeight			 = 600;
@@ -72,6 +74,8 @@ int				DirectState = 0;  //0:right  1:left
 int				Gamescore				= 0;
 bool			isDead					= false;
 int             flashIntervalCounter	= 0;
+//bool			isFast = false;
+
 /***************************/
 /*  Function Declaration   */
 /***************************/
@@ -109,6 +113,14 @@ void myDisplay(void)
 	int timeSincePrevFrame = currTime - prevTime;
 	int elapsedTime = currTime - startTime;
 	prevTime = currTime;
+
+	//if (1000 / timeSincePrevFrame > 100){
+	//	Sleep(27);
+	//}
+
+
+	if (updateInterval > 10)
+		updateInterval = 20 - Gamescore / 10;
 
 	char fpsmss[30];
 	sprintf(fpsmss, "Fps %.1f", 1000.0 / timeSincePrevFrame);
@@ -213,7 +225,6 @@ void GameOver(){
 }
 
 void PressSpaceToStart(){
-//	gameState = 0;
 	char mss[50];
 	sprintf(mss, "Press   \"Space\"   To   Start");
 
@@ -281,7 +292,7 @@ void update(int i)
 	}
 	if (gameState == 1){
 		glutPostRedisplay();
-		glutTimerFunc(20, update, 0);
+		glutTimerFunc(updateInterval, update, 0);
 	}
 }
 
@@ -294,20 +305,22 @@ void myKeys(unsigned char key, int x, int y)
 		exit(0);
 		break;
 	case ' ':
-		if (gameState == 0){
-			gameState = 1;
-			update(0);
-			picY = 400;
-			Gamescore = 0;
-			isDead = false;
-			init();
-		}
-		if (!isDead && !pressedJump) {
-			pressedJump = true;
-			gravity_counter = 0;
-			jump_strength = 15;
-			jump(0);
-			shoot(0);
+		if (!pressedJump){
+			if (gameState == 0){
+				gameState = 1;
+				update(0);
+				picY = 400;
+				Gamescore = 0;
+				isDead = false;
+				init();
+			}
+			if (!isDead) {
+				pressedJump = true;
+				gravity_counter = 0;
+				jump_strength = 15;
+				jump(0);
+				shoot(0);
+			}
 		}
 		break;
 	}
@@ -343,19 +356,24 @@ void init()
 	isJumping = false;
 	jump_strength = 15;
 	gravity_counter = 0;
-
+	updateInterval = 20;
+	 
 	picX = 100;
 	picY = 400;
 	flashIntervalCounter = 0;
-	
+
+	pressedJump = false;
 	shield.init();
 	//init enemies
 	for (int i = 0; i < 5; i++)	enemy[i].init();
 	
+//	isFast = false;
 }
 
 int main(int argc, char **argv)
 {
+	//FreeConsole();
+
 	glutInit(&argc, argv); 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutInitWindowSize(screenWidth, screenHeight);
