@@ -1,16 +1,13 @@
-﻿已經開始建置於 2014/10/16 下午 02:35:34。
-     1>節點 2 (Build 目標) 上的專案 "C:\Users\SSARCANDY\Documents\GitHub\Ultimate-Shooting-Flappy-Bird\2D_game\2D_game.vcxproj"。
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _CRT_SECURE_NO_WARNINGS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Enemy.cpp
-         Enemy.cpp
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\SSARCANDY\Documents\GitHub\Ultimate-Shooting-Flappy-Bird\Debug\2D_game.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\SSARCANDY\Documents\GitHub\Ultimate-Shooting-Flappy-Bird\Debug\2D_game.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\SSARCANDY\Documents\GitHub\Ultimate-Shooting-Flappy-Bird\Debug\2D_game.lib" /MACHINE:X86 Debug\Enemy.obj
+﻿已經開始建置於 2014/10/17 上午 01:56:06。
+     1>節點 2 (Build 目標) 上的專案 "C:\Users\Administrator\Documents\GitHub\Ultimate-Shooting-Flappy-Bird\2D_game\2D_game.vcxproj"。
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Administrator\Documents\GitHub\Ultimate-Shooting-Flappy-Bird\Debug\2D_game.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Administrator\Documents\GitHub\Ultimate-Shooting-Flappy-Bird\Debug\2D_game.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Administrator\Documents\GitHub\Ultimate-Shooting-Flappy-Bird\Debug\2D_game.lib" /MACHINE:X86 Debug\Enemy.obj
          Debug\Main.obj
          Debug\RGBpixmap.obj
          Debug\Shield.obj
-         2D_game.vcxproj -> C:\Users\SSARCANDY\Documents\GitHub\Ultimate-Shooting-Flappy-Bird\Debug\2D_game.exe
-     1>專案 "C:\Users\SSARCANDY\Documents\GitHub\Ultimate-Shooting-Flappy-Bird\2D_game\2D_game.vcxproj" (Build 目標) 建置完成。
+         2D_game.vcxproj -> C:\Users\Administrator\Documents\GitHub\Ultimate-Shooting-Flappy-Bird\Debug\2D_game.exe
+     1>專案 "C:\Users\Administrator\Documents\GitHub\Ultimate-Shooting-Flappy-Bird\2D_game\2D_game.vcxproj" (Build 目標) 建置完成。
 
 建置成功。
 
-經過時間 00:00:09.63
+經過時間 00:00:01.08
