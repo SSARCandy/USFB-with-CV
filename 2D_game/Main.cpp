@@ -1,4 +1,3 @@
-
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -187,7 +186,6 @@ void myDisplay(void)
 			if (bulletType == 1){
   				if (enemy[j].dead(0, bullet[i].Y, 1200, bullet[i].Y + bullet[i].height)){
 					Gamescore++;
-					bullet_on_field--;
 				}
 			}
 			else{
@@ -205,7 +203,7 @@ void myDisplay(void)
 	sprintf(mss, "Scores :  %d", Gamescore);
 
 	glColor3f(1.0, 0.0, 0.0);  //set font color
-	glRasterPos2i(10, 550);    //set font start position
+	glRasterPos2i(520, 550);    //set font start position
 	for (int i = 0; i<strlen(mss); i++) 
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, mss[i]);
 

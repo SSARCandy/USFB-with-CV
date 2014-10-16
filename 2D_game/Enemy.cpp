@@ -12,7 +12,7 @@ void Enemy::loadFrames(){
 }
 void Enemy::init(){
 	X = 1400;
-	Y = rand() % 500 + 100;
+	Y = rand() % 450 + 100;
 
 	width = frames[0].w();
 	height = frames[0].h();
@@ -48,7 +48,7 @@ void Enemy::updatePosition(){
 	if (X < 0)
 	{
 		X = 1300;
-		Y = rand() % 500 + 100;
+		Y = rand() % 450 + 100;
 	}
 	if (Y <= 100){
 		init();
@@ -62,9 +62,13 @@ bool Enemy::hitPlayer(int x1, int y1, int x2, int y2){
 bool Enemy::dead(int x1, int y1, int x2, int y2){
 	bool isTouched = !(x1 > X + width || x2 < X || y1 > Y + height || y2 < Y);
 
-	if (isTouched)
+	if (isTouched && !isHit){
 		isHit = true;
-	return isTouched;
+		return true;
+	}
+	else{
+		return false;
+	}
 }
 
 
