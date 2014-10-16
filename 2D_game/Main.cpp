@@ -183,7 +183,7 @@ void myDisplay(void)
 	for (int i = 0; i < bullet_on_field; i++){
 		bullet[i].animation();
 		for (int j = 0; j < 5; j++){
-			if (bulletType == 1){
+			if (bullet[i].type == 1){
   				if (enemy[j].dead(0, bullet[i].Y, 1200, bullet[i].Y + bullet[i].height)){
 					Gamescore++;
 				}
@@ -208,7 +208,7 @@ void myDisplay(void)
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, mss[i]);
 
 	glRasterPos2i(480, 10);    //set font start position
-	sprintf(mss, "1~3  to change Wepons");
+	sprintf(mss, "1~3  to Change Wepons");
 	for (int i = 0; i<strlen(mss); i++)
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, mss[i]);
 
