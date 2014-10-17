@@ -3,7 +3,7 @@
 #else
 #include <windows.h>
 //#include <GL/glew.h>
-#include <GL/glut.h>
+#include <glut.h>
 #endif
 
 #include <stdlib.h>
