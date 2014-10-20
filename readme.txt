@@ -7,7 +7,7 @@ A simple 2D game implement with glut tool(openGL)
 
 １。姓　　名：　許書軒
 
-２。學　　號：　101703003
+２。學　　號：　101703003 @ NCCUCS
 
 ３。開發環境：　Visual Studio 2013 
 
@@ -32,4 +32,4 @@ A simple 2D game implement with glut tool(openGL)
 		　　3:方塊墜落彈
 
 
-tag: openGL, glut, 2D game, flappy bird, shooting game
+Tag: openGL, glut, 2D game, flappy bird, shooting game, NCCUCS-3D-game-programming
