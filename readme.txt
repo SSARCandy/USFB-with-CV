@@ -2,6 +2,9 @@
 ----------------Ultimate Shooting Flappy Bird----------------------
 --------------------------------------------------by SSARCandy-----
 
+A simple 2D game implement with glut tool(openGL)
+
+
 １。姓　　名：　許書軒
 
 ２。學　　號：　101703003
@@ -27,3 +30,6 @@
 		　　1:普通子彈
 		　　2:穿透型雷射
 		　　3:方塊墜落彈
+
+
+tag: openGL, glut, 2D game, flappy bird, shooting game
