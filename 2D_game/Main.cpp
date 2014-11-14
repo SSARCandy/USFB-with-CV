@@ -1,9 +1,9 @@
+#include <windows.h>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
-#include <windows.h>
 //#include <GL/glew.h>
-#include <glut.h>
+#include <GL/glut.h>
 #endif
 
 #include <stdlib.h>
@@ -50,7 +50,7 @@ RGBApixmap		pic[7];								// create two (empty) global pixmaps
 //RGBApixmap		bg;
 int				whichPic				 = 0;			// which pixmap to display
 //Game State
-int				gameState				 = 0;			// 0:Prestart   1:In game   2:GameOver 
+int				gameState				 = 0;			// 0:Prestart   1:In game   2:GameOver
 
 //Set Enemies
 //struct enemy    enemy[5];
@@ -65,7 +65,7 @@ bool			isJumping				= false;
 bool			pressedJump				= false;		// Record keybord "SPACE" State
 int				jump_strength			= 15;
 int				gravity_counter			= 0;
-//Player 
+//Player
 int				picX = 100;
 int				picY = 400;
 int				DirectState = 0;  //0:right  1:left
@@ -135,7 +135,7 @@ void myDisplay(void)
 	else{
 		pic[3].blendTex(bg1X, 100);
 		pic[4].blendTex(bg2X, -30);
-		if (isDead && picY <= 100)	
+		if (isDead && picY <= 100)
 			GameOver();
 	}
 	pic[5].blendTex(10, 480, 1.5, 1.5);
@@ -204,7 +204,7 @@ void myDisplay(void)
 
 	glColor3f(1.0, 0.0, 0.0);  //set font color
 	glRasterPos2i(520, 550);    //set font start position
-	for (int i = 0; i<strlen(mss); i++) 
+	for (int i = 0; i<strlen(mss); i++)
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, mss[i]);
 
 	glRasterPos2i(480, 10);    //set font start position
@@ -215,12 +215,12 @@ void myDisplay(void)
 	glColor3f(0.0, 0.5, 0.3);  //set font color
 	glRasterPos2i(10, 10);    //set font start position
 	sprintf(mss, "Press \"Q\" to Exit");
-	for (int i = 0; i<strlen(mss); i++) 
+	for (int i = 0; i<strlen(mss); i++)
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, mss[i]);
-	
+
 
 	glRasterPos2i(screenWidth - 100, 10);    //set font start position
-	for (int i = 0; i<strlen(fpsmss); i++) 
+	for (int i = 0; i<strlen(fpsmss); i++)
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, fpsmss[i]);
 
 	if (gameState == 0)
@@ -283,7 +283,7 @@ void update(int i)
 	//Background 2 Moving
 	if (bg2X >= -100)	bg2X -= 6;
 	else        		bg2X  = 0;
-	
+
 	if (picY > 100){
 		if (!isJumping)
 			picY = (gravity_counter < 15) ? picY - gravity_counter++ : picY - gravity_counter;
@@ -381,7 +381,7 @@ void init()
 	jump_strength = 15;
 	gravity_counter = 0;
 	updateInterval = 20;
-	 
+
 	picX = 100;
 	picY = 400;
 	flashIntervalCounter = 0;
@@ -400,7 +400,7 @@ int main(int argc, char **argv)
 {
 	//FreeConsole();
 
-	glutInit(&argc, argv); 
+	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutInitWindowSize(screenWidth, screenHeight);
 	glutInitWindowPosition(50, 30);
