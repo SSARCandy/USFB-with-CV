@@ -1,0 +1,70 @@
+# depslib dependency file v1.0
+1413477970 source:c:\users\administrator\documents\github\ultimate-shooting-flappy-bird\2d_game\enemy.cpp
+	"Enemy.h"
+
+1413385940 c:\users\administrator\documents\github\ultimate-shooting-flappy-bird\2d_game\enemy.h
+	<GLUT/glut.h>
+	<windows.h>
+	<GL/glut.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<vector>
+	"RGBpixmap.h"
+
+1413385940 c:\users\administrator\documents\github\ultimate-shooting-flappy-bird\2d_game\rgbpixmap.h
+	<GLUT/glut.h>
+	<windows.h>
+	<GL/glut.h>
+	<string>
+	<iostream>
+	<fstream>
+	<assert.h>
+	<math.h>
+	<stdlib.h>
+
+1413822326 source:c:\users\administrator\documents\github\ultimate-shooting-flappy-bird\2d_game\main.cpp
+	<windows.h>
+	<GLUT/glut.h>
+	<GL/glut.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<vector>
+	"RGBpixmap.h"
+	"Shield.h"
+	"Enemy.h"
+	"Bullet.h"
+
+1413478195 c:\users\administrator\documents\github\ultimate-shooting-flappy-bird\include\glut.h
+	<windows.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1413399817 c:\users\administrator\documents\github\ultimate-shooting-flappy-bird\2d_game\shield.h
+	<GLUT/glut.h>
+	<windows.h>
+	<GL/glut.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<vector>
+	<math.h>
+	"RGBpixmap.h"
+
+1413401395 c:\users\administrator\documents\github\ultimate-shooting-flappy-bird\2d_game\bullet.h
+	<GLUT/glut.h>
+	<windows.h>
+	<GL/glut.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<vector>
+	"RGBpixmap.h"
+
+1413385940 source:c:\users\administrator\documents\github\ultimate-shooting-flappy-bird\2d_game\rgbpixmap.cpp
+	"RGBpixmap.h"
+
+1413400004 source:c:\users\administrator\documents\github\ultimate-shooting-flappy-bird\2d_game\shield.cpp
+	"Shield.h"
+
