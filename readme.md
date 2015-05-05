@@ -31,5 +31,9 @@ A simple 2D game implement with glut tool(openGL)
 		　　2:穿透型雷射
 		　　3:方塊墜落彈
 
+８。遊戲畫面
+![img](demo/demo1.JPG)
+![img](demo/demo3.JPG)
+![img](demo/demo2.JPG)
 
 Tag: openGL, glut, 2D game, flappy bird, shooting game, NCCUCS-3D-game-programming
