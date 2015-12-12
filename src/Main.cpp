@@ -1,4 +1,4 @@
-#include <windows.h>
+//#include <windows.h>
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
@@ -12,7 +12,7 @@
 #include <vector>
 
 #include "RGBpixmap.h"
-#include "Shield.h"
+//#include "Shield.h"
 #include "Enemy.h"
 #include "Bullet.h"
 using namespace std;
@@ -54,7 +54,7 @@ int				gameState				 = 0;			// 0:Prestart   1:In game   2:GameOver
 
 //Set Enemies
 //struct enemy    enemy[5];
-Shield			shield;
+//Shield			shield;
 Enemy			enemy[5];
 //Set Bullets
 Bullet			bullet[10];
@@ -144,26 +144,17 @@ void myDisplay(void)
 	if (picY >= 500){
 		if (sunCounter++ > 100){
 			//GameOver();
-			whichPic = 6;
-			shield.init();
+            whichPic = 6;
 			isDead = true;
 		}
 	}
 	else sunCounter = 0;
 
 	if (picY <= 100){
-		if (shield.isEquip){
-			shield.distory(picX, picY, picX + pic[whichPic].w(), picY + pic[whichPic].h());
-			jump(0);
-		}
-		else{
 			isDead = true;
-		}
-	}
+}
 
-	shield.animation();
-	shield.eat(picX, picY, picX + pic[whichPic].w(), picY + pic[whichPic].h());
-
+    
 	if (!isJumping)
 		pic[whichPic].blendTexRotate(picX, picY, 1, 1, gravity_counter * -5);
 	else
@@ -171,11 +162,8 @@ void myDisplay(void)
 
 	for (int i = 0; i < 5; i++){
 		enemy[i].animation();
-		if (shield.isEquip){
-			shield.distory(enemy[i].X, enemy[i].Y, enemy[i].X + enemy[i].width, enemy[i].Y + enemy[i].height);
-			if (!shield.isEquip) enemy[i].init();
-		}
-		if (enemy[i].hitPlayer(picX, picY, picX + pic[whichPic].w(), picY + pic[whichPic].h())) {
+
+        if (enemy[i].hitPlayer(picX, picY, picX + pic[whichPic].w(), picY + pic[whichPic].h())) {
 			isDead = true;
 			enemy[i].init();
 		}
@@ -299,8 +287,6 @@ void update(int i)
 		}
 	}
 
-	shield.updatePosition(picX, picY);
-
 	for (int i = 0; i < 5; i++)
 	{
 		enemy[i].updatePosition();
@@ -387,7 +373,6 @@ void init()
 	flashIntervalCounter = 0;
 
 	pressedJump = false;
-	shield.init();
 	//init enemies
 	for (int i = 0; i < 5; i++)	enemy[i].init();
 	for (int i = 0; i < 10; i++){
