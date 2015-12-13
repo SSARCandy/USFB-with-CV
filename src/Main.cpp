@@ -6,6 +6,10 @@
 #include <GL/glut.h>
 #endif
 
+#include <opencv/cv.h>
+#include <opencv2/opencv.hpp>
+#include <opencv/highgui.h>
+
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
@@ -16,6 +20,7 @@
 #include "Enemy.h"
 #include "Bullet.h"
 using namespace std;
+using namespace cv;
 
 
 //  http://devmaster.net/forums/topic/7934-aabb-collision/
@@ -34,6 +39,13 @@ static void CheckError(int line)
 			gluErrorString(err), (int)err, line);
 	}
 }
+
+
+bool first = true;
+
+VideoCapture cap(CV_CAP_ANY);
+Mat frame,bkFrame,refFrame,diff;
+
 
 // Global variables for measuring time (in milli-seconds)
 int				startTime;
@@ -107,6 +119,16 @@ void myReshape(int w, int h)
 //myDisplay
 void myDisplay(void)
 {
+    if(!first){
+        cap.read(frame);
+        cvtColor(frame, bkFrame, CV_BGR2GRAY);
+        absdiff(bkFrame, refFrame, diff);
+      //  threshold(diff, diff, 30, 255, CV_THRESH_BINARY);
+        
+        imshow("Webcam", bkFrame);
+        imshow("FrameDifference", diff);
+    }
+    
 	// Measure the elapsed time
 	int currTime = glutGet(GLUT_ELAPSED_TIME);
 	int timeSincePrevFrame = currTime - prevTime;
@@ -404,14 +426,35 @@ int main(int argc, char **argv)
 	pic[5].readBMPFile("image/sun1.bmp"); cout << '.';
 	pic[6].readBMPFile("image/bird_burned.bmp"); cout << '.'
 	<< endl;
+    
 
+    
 
 	for (int i = 0; i < 7; i++) pic[i].setChromaKey(255, 255, 255);
 	for (int i = 0; i < 5; i++)	enemy[i].loadFrames();
 
-	//cout<<"Reading Backgroud........"<<endl;
-	//bg.readBMPFile("image/bg1.bmp");
+	
+    namedWindow("Webcam", CV_WINDOW_AUTOSIZE);
+    namedWindow("FrameDifference", CV_WINDOW_AUTOSIZE);
+    //cap.open(CV_CAP_ANY);
+    
+    while (first) {
+        if(cap.read(frame)){
+            
+            cap.read(frame);
+            
+            diff = Mat::zeros(frame.size(), CV_8UC1);
+            bkFrame = Mat::zeros(frame.size(), CV_8UC1);
+            refFrame = Mat::zeros(frame.size(), CV_8UC1);
+            
+//            bkFrame.convertTo(refFrame, CV_8UC1);
+            cvtColor(frame, refFrame, CV_BGR2GRAY);
 
+            
+            first = false;
+        }
+    }
+    
 	// Initialize the time variables
 	startTime = glutGet(GLUT_ELAPSED_TIME);
 	prevTime = startTime;
