@@ -45,6 +45,8 @@ bool first = true;
 
 VideoCapture cap(CV_CAP_ANY);
 Mat frame,bkFrame,refFrame,diff;
+Mat hotSpot_up, hotSpot_down;
+Size defaultSize(1280, 720);
 
 
 // Global variables for measuring time (in milli-seconds)
@@ -125,9 +127,20 @@ void myDisplay(void)
         absdiff(bkFrame, refFrame, diff);
       //  threshold(diff, diff, 30, 255, CV_THRESH_BINARY);
         
-        imshow("Webcam", bkFrame);
+//        imshow("Webcam", bkFrame);
         imshow("FrameDifference", diff);
+
+        Mat isUp = Mat::zeros(defaultSize, CV_8UC1);
+        isUp = diff.mul(hotSpot_up);
+//        normalize(isUp, isUp, 0, 255, NORM_MINMAX);
+        imshow("f1", isUp);
+        double v = sum(isUp)[0]/255;
+        if (v > 100*1280*0.35){
+            cout<<"uppp"<<rand()<<endl;
+        }
+
     }
+    
     
 	// Measure the elapsed time
 	int currTime = glutGet(GLUT_ELAPSED_TIME);
@@ -236,6 +249,7 @@ void myDisplay(void)
 	if (gameState == 0)
 		PressSpaceToStart();
 
+    
 	CheckError(__LINE__);
 	glutSwapBuffers();
 }
@@ -401,6 +415,21 @@ void init()
 		bullet[i].init(picY, bulletType);
 	}
 //	isFast = false;
+    
+    hotSpot_down = Mat::zeros(defaultSize, CV_8UC1);
+    hotSpot_up = Mat::zeros(defaultSize, CV_8UC1);
+
+    for(int row=0; row<defaultSize.height; row++){
+        for (int col=0; col<defaultSize.width; col++) {
+            if (row < 100) {
+                hotSpot_up.at<int>(row, col) = 255;
+            }
+            if (row > 620) {
+                hotSpot_down.at<int>(row, col) = 255;
+            }
+        }
+    }
+//    imshow("fuck", hotSpot_down);
 }
 
 int main(int argc, char **argv)
@@ -436,7 +465,6 @@ int main(int argc, char **argv)
 	
     namedWindow("Webcam", CV_WINDOW_AUTOSIZE);
     namedWindow("FrameDifference", CV_WINDOW_AUTOSIZE);
-    //cap.open(CV_CAP_ANY);
     
     while (first) {
         if(cap.read(frame)){
@@ -447,7 +475,7 @@ int main(int argc, char **argv)
             bkFrame = Mat::zeros(frame.size(), CV_8UC1);
             refFrame = Mat::zeros(frame.size(), CV_8UC1);
             
-//            bkFrame.convertTo(refFrame, CV_8UC1);
+            
             cvtColor(frame, refFrame, CV_BGR2GRAY);
 
             
