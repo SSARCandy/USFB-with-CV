@@ -8,8 +8,18 @@ Oringin game fork from my another [repo](https://github.com/SSARCandy/Ultimate-S
 In this repo, I modify the game goal to have better fit with CV input.
 
 #### Build
-1. use CMake (min ver3.0)
-2. move `images/` to build directory  
+ - Required:
+   - openCV
+   - openGL
+   - glut
+ - for Mac:
+   1. use CMake (min ver3.0) -> choose `xcode`
+   2. move `images/` to build directory  
+   3. add `openGL.framework`, `glut.framework` and core lib of `opencv` (usually will at `/usr/local/lib`)
+ - for Windows:
+   1. use Cmake -> choose `VisualStudio `
+   2. move `images/` to build directory
+   3. set `USFB` as startup project
 
 #### Game Intro：
 You will controll a yellow flappy-bird  
