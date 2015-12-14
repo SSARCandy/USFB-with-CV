@@ -38,7 +38,7 @@ void Enemy::animation(){
 	}
 	frames[FrameIndex].blendTex(X, Y);
 }
-void Enemy::updatePosition(){
+int Enemy::updatePosition(){
 	if (isHit){
 		gravityCounter += 0.3;
 		Y -= gravityCounter;
@@ -49,10 +49,12 @@ void Enemy::updatePosition(){
 	{
 		X = 1300;
 		Y = rand() % 450 + 100;
+        return 1;
 	}
 	if (Y <= 100){
 		init();
 	}
+    return 0;
 
 }
 bool Enemy::hitPlayer(int x1, int y1, int x2, int y2){

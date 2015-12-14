@@ -47,7 +47,9 @@ VideoCapture cap(CV_CAP_ANY);
 Mat frame,bkFrame,refFrame,diff;
 Mat hotSpot_up, hotSpot_down;
 Size defaultSize(1280, 720);
-
+# define ACTIVATE_THRESHOLD 0.1
+# define DEFAULT_JUMP_STRENGTH 15
+bool jumpLock = false;
 
 // Global variables for measuring time (in milli-seconds)
 int				startTime;
@@ -60,7 +62,7 @@ int				bg1X					 = 0;			// 2400 * 500
 int				bg2X					 = 0;			// 1400 * 130
 //Set pictures
 int				i						 = 0;
-RGBApixmap		pic[7];								// create two (empty) global pixmaps
+RGBApixmap		pic[8];								// create two (empty) global pixmaps
 //RGBApixmap		bg;
 int				whichPic				 = 0;			// which pixmap to display
 //Game State
@@ -77,7 +79,7 @@ int				bullet_on_field			 = 0;
 //Set Gravity
 bool			isJumping				= false;
 bool			pressedJump				= false;		// Record keybord "SPACE" State
-int				jump_strength			= 15;
+int				jump_strength			= DEFAULT_JUMP_STRENGTH;
 int				gravity_counter			= 0;
 //Player
 int				picX = 100;
@@ -94,11 +96,70 @@ int             flashIntervalCounter	= 0;
 /***************************/
 void init();
 void initEnemy(int index);
-void jump(int value);
+void up(int value);
+void down(int value);
 void GameOver();
 void PressSpaceToStart();
 
 
+
+void myKeysForCV(char key)
+{
+    switch (key)
+    {
+        case 'W':
+        case 'w':
+            if (!pressedJump){
+                if (!isDead) {
+                    pressedJump = true;
+                    gravity_counter = 0;
+                    jump_strength = DEFAULT_JUMP_STRENGTH;
+                    up(0);
+                }
+            }
+            break;
+        case 'S':
+        case 's':
+            if (!pressedJump){
+                if (!isDead) {
+                    pressedJump = true;
+                    gravity_counter = 0;
+                    jump_strength = DEFAULT_JUMP_STRENGTH;
+                    down(0);
+                }
+            }
+            break;
+        case 'x':
+            pressedJump =false;
+    }
+}
+
+void detectAction() {
+    if(!first){
+        cap.read(frame);
+        cvtColor(frame, bkFrame, CV_BGR2GRAY);
+        absdiff(bkFrame, refFrame, diff);
+        //  threshold(diff, diff, 30, 255, CV_THRESH_BINARY);
+        
+        imshow("FrameDifference", diff);
+        double v1, v2;
+        Mat tmp = Mat::zeros(defaultSize, CV_8UC1);
+        
+        tmp = hotSpot_up.mul(diff/255);
+        v1 = sum(tmp)[0]/255;
+        tmp = hotSpot_down.mul(diff/255);
+        v2 = sum(tmp)[0]/255;
+        if (v1 > 100*defaultSize.width*ACTIVATE_THRESHOLD){
+            cout<<"uppp "<< v1 <<endl;
+            myKeysForCV('w');
+        } else if(v2 > 100*defaultSize.width*0.3) {
+            cout<<"DOWNNNNNN"<< v2 <<endl;
+            myKeysForCV('s');
+        } else {
+            myKeysForCV('x');
+        }
+    }
+}
 
 //myReshape
 void myReshape(int w, int h)
@@ -121,39 +182,17 @@ void myReshape(int w, int h)
 //myDisplay
 void myDisplay(void)
 {
-    if(!first){
-        cap.read(frame);
-        cvtColor(frame, bkFrame, CV_BGR2GRAY);
-        absdiff(bkFrame, refFrame, diff);
-      //  threshold(diff, diff, 30, 255, CV_THRESH_BINARY);
-        
-//        imshow("Webcam", bkFrame);
-        imshow("FrameDifference", diff);
-
-        Mat isUp = Mat::zeros(defaultSize, CV_8UC1);
-        isUp = diff.mul(hotSpot_up);
-//        normalize(isUp, isUp, 0, 255, NORM_MINMAX);
-        imshow("f1", isUp);
-        double v = sum(isUp)[0]/255;
-        if (v > 100*1280*0.35){
-            cout<<"uppp"<<rand()<<endl;
-        }
-
-    }
+    detectAction();
     
-    
-	// Measure the elapsed time
+    // Measure the elapsed time
 	int currTime = glutGet(GLUT_ELAPSED_TIME);
 	int timeSincePrevFrame = currTime - prevTime;
 	int elapsedTime = currTime - startTime;
 	prevTime = currTime;
 
-	//if (1000 / timeSincePrevFrame > 100){
-	//	Sleep(27);
-	//}
-
-	if (updateInterval > 10)
-		updateInterval = 20 - Gamescore / 10;
+	
+//    if (updateInterval > 10)
+//		updateInterval = 20 - Gamescore / 10;
 
 	char fpsmss[30];
 	sprintf(fpsmss, "Fps %.1f", 1000.0 / timeSincePrevFrame);
@@ -175,19 +214,10 @@ void myDisplay(void)
 	}
 	pic[5].blendTex(10, 480, 1.5, 1.5);
 
-	//prevent player keep stay at roof
-	if (picY >= 500){
-		if (sunCounter++ > 100){
-			//GameOver();
-            whichPic = 6;
-			isDead = true;
-		}
-	}
-	else sunCounter = 0;
 
-	if (picY <= 100){
-			isDead = true;
-}
+    if (picY <= 100){
+        isDead = true;
+    }
 
     
 	if (!isJumping)
@@ -203,23 +233,23 @@ void myDisplay(void)
 			enemy[i].init();
 		}
 	}
-	for (int i = 0; i < bullet_on_field; i++){
-		bullet[i].animation();
-		for (int j = 0; j < 5; j++){
-			if (bullet[i].type == 1){
-  				if (enemy[j].dead(0, bullet[i].Y, 1200, bullet[i].Y + bullet[i].height)){
-					Gamescore++;
-				}
-			}
-			else{
-				if (enemy[j].dead(bullet[i].X, bullet[i].Y, bullet[i].X + bullet[i].width, bullet[i].Y + bullet[i].height)){
-					Gamescore++;
-					bullet[i] = bullet[bullet_on_field - 1];
-					bullet_on_field--;
-				}
-			}
-		}
-	}
+//	for (int i = 0; i < bullet_on_field; i++){
+//		bullet[i].animation();
+//		for (int j = 0; j < 5; j++){
+//			if (bullet[i].type == 1){
+//  				if (enemy[j].dead(0, bullet[i].Y, 1200, bullet[i].Y + bullet[i].height)){
+//					Gamescore++;
+//				}
+//			}
+//			else{
+//				if (enemy[j].dead(bullet[i].X, bullet[i].Y, bullet[i].X + bullet[i].width, bullet[i].Y + bullet[i].height)){
+//					Gamescore++;
+//					bullet[i] = bullet[bullet_on_field - 1];
+//					bullet_on_field--;
+//				}
+//			}
+//		}
+//	}
 
 	//Font
 	char mss[30];
@@ -275,21 +305,38 @@ void PressSpaceToStart(){
 	for (int i = 0; i < bullet_on_field; i++)  bullet[i].X = 1500;
 }
 
-void jump(int value)
+void up(int value)
 {
-	whichPic = 2;
-	if (value < 14) {
-		isJumping = true;
-		if (picY < screenHeight - 50)
-			picY += jump_strength--;
-		value++;
-		glutTimerFunc(20, jump, value);
-	}
-	else {
-		isJumping = false;
-		jump_strength = 15;
-		whichPic = 0;
-	}
+    whichPic = 2;
+    if (value < 5) {
+        isJumping = true;
+        if (picY < screenHeight - 50)
+            picY += jump_strength--;
+        value++;
+        glutTimerFunc(40, up, value);
+    }
+    else {
+        isJumping = false;
+        jump_strength = DEFAULT_JUMP_STRENGTH;
+        whichPic = 0;
+    }
+}
+
+void down(int value)
+{
+    whichPic = 7;
+    if (value < 5) {
+        isJumping = true;
+        if (picY > 110)
+            picY -= jump_strength--;
+        value++;
+        glutTimerFunc(40, down, value);
+    }
+    else {
+        isJumping = false;
+        jump_strength = DEFAULT_JUMP_STRENGTH;
+        whichPic = 0;
+    }
 }
 
 void shoot(int i){
@@ -308,7 +355,7 @@ void update(int i)
 	if (bg2X >= -100)	bg2X -= 6;
 	else        		bg2X  = 0;
 
-	if (picY > 100){
+	if (isDead){
 		if (!isJumping)
 			picY = (gravity_counter < 15) ? picY - gravity_counter++ : picY - gravity_counter;
 		else
@@ -325,7 +372,7 @@ void update(int i)
 
 	for (int i = 0; i < 5; i++)
 	{
-		enemy[i].updatePosition();
+		Gamescore += enemy[i].updatePosition();
 	}
 	if (gameState == 1){
 		glutPostRedisplay();
@@ -337,70 +384,74 @@ void myKeys(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
-	case '1':
-		bulletType = 0;
-		break;
-	case '2':
-		bulletType = 1;
-		break;
-	case '3':
-		bulletType = 2;
-		break;
-	case 'Q':
-	case 'q':
-		exit(0);
-		break;
-	case ' ':
-		if (!pressedJump){
-			if (gameState == 0){
-				gameState = 1;
-				update(0);
-				picY = 400;
-				Gamescore = 0;
-				isDead = false;
-				init();
-			}
-			if (!isDead) {
-				pressedJump = true;
-				gravity_counter = 0;
-				jump_strength = 15;
-				jump(0);
-				shoot(0);
-			}
-		}
-		break;
+        case '1':
+            bulletType = 0;
+            break;
+        case '2':
+            bulletType = 1;
+            break;
+        case '3':
+            bulletType = 2;
+            break;
+        case 'Q':
+        case 'q':
+            exit(0);
+            break;
+        case ' ':
+            if (gameState == 0){
+                gameState = 1;
+                update(0);
+                picY = 400;
+                Gamescore = 0;
+                isDead = false;
+                init();
+            }
+            break;
+        case 'W':
+        case 'w':
+            if (!pressedJump){
+                if (!isDead) {
+                    pressedJump = true;
+                    gravity_counter = 0;
+                    jump_strength = DEFAULT_JUMP_STRENGTH;
+                    up(0);
+                    //				shoot(0);
+                }
+            }
+            break;
+        case 'S':
+        case 's':
+            if (!pressedJump){
+                if (!isDead) {
+                    pressedJump = true;
+                    gravity_counter = 0;
+                    jump_strength = DEFAULT_JUMP_STRENGTH;
+                    down(0);
+                    //				shoot(0);
+                }
+            }
+            break;
 	}
 //	glutPostRedisplay();
 }
 void myKeysUp(unsigned char key, int x, int y){
-	if (key == ' ')
+	if (key == 'W' || key == 'w' || key == 'S' || key == 's')
 		pressedJump = false;
 }
 
 void init()
 {
-	//GLenum err = glewInit();
-	//if (GLEW_OK != err)
-	//{
-	//  // Problem: glewInit failed, something is seriously wrong.
-	//  fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-	//}
-
-//	glutSpecialFunc(SpecialKeys);
 	glutKeyboardFunc(myKeys);
 	glutKeyboardUpFunc(myKeysUp);
-	//	glutMouseFunc(myMouse);
-	//	glutMotionFunc(mouseMove);
 	glutDisplayFunc(myDisplay);
 	glutReshapeFunc(myReshape);
 
 	glShadeModel(GL_SMOOTH);
-	//glEnable(GL_DEPTH_TEST);
 
 	glClearColor(1.0f, 1.0f, 0.0f, 0.0f); //background color(1.0, 1.0, 1.0): white color
 
 	isJumping = false;
-	jump_strength = 15;
+	jump_strength = DEFAULT_JUMP_STRENGTH;
 	gravity_counter = 0;
 	updateInterval = 20;
 
@@ -414,22 +465,13 @@ void init()
 	for (int i = 0; i < 10; i++){
 		bullet[i].init(picY, bulletType);
 	}
-//	isFast = false;
+
     
     hotSpot_down = Mat::zeros(defaultSize, CV_8UC1);
     hotSpot_up = Mat::zeros(defaultSize, CV_8UC1);
 
-    for(int row=0; row<defaultSize.height; row++){
-        for (int col=0; col<defaultSize.width; col++) {
-            if (row < 100) {
-                hotSpot_up.at<int>(row, col) = 255;
-            }
-            if (row > 620) {
-                hotSpot_down.at<int>(row, col) = 255;
-            }
-        }
-    }
-//    imshow("fuck", hotSpot_down);
+    hotSpot_up = imread("image/hot_up.png", CV_LOAD_IMAGE_GRAYSCALE);
+    hotSpot_down = imread("image/hot_down.png", CV_LOAD_IMAGE_GRAYSCALE);
 }
 
 int main(int argc, char **argv)
@@ -453,13 +495,14 @@ int main(int argc, char **argv)
 	pic[3].readBMPFile("image/bg1.bmp"); cout << '.';
 	pic[4].readBMPFile("image/bg2.bmp"); cout << '.';
 	pic[5].readBMPFile("image/sun1.bmp"); cout << '.';
-	pic[6].readBMPFile("image/bird_burned.bmp"); cout << '.'
+	pic[6].readBMPFile("image/bird_burned.bmp"); cout << '.';
+    pic[7].readBMPFile("image/bird_dive.bmp");  cout << '.'
 	<< endl;
     
 
     
 
-	for (int i = 0; i < 7; i++) pic[i].setChromaKey(255, 255, 255);
+	for (int i = 0; i < 8; i++) pic[i].setChromaKey(255, 255, 255);
 	for (int i = 0; i < 5; i++)	enemy[i].loadFrames();
 
 	
@@ -468,17 +511,14 @@ int main(int argc, char **argv)
     
     while (first) {
         if(cap.read(frame)){
-            
             cap.read(frame);
             
             diff = Mat::zeros(frame.size(), CV_8UC1);
             bkFrame = Mat::zeros(frame.size(), CV_8UC1);
             refFrame = Mat::zeros(frame.size(), CV_8UC1);
             
-            
             cvtColor(frame, refFrame, CV_BGR2GRAY);
 
-            
             first = false;
         }
     }

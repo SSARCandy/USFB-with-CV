@@ -20,7 +20,7 @@ public:
 	void init();
 	void loadFrames();
 	void animation();
-	void updatePosition();
+	int updatePosition();
 	bool hitPlayer(int x1, int y1, int x2, int y2);
 	bool dead(int x1, int y1, int x2, int y2);
 	float X;
