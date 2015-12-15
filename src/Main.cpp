@@ -47,8 +47,10 @@ VideoCapture cap(CV_CAP_ANY);
 Mat frame,bkFrame,refFrame,diff;
 Mat hotSpot_up, hotSpot_down;
 Size defaultSize(1280, 720);
-# define ACTIVATE_THRESHOLD 0.1
+Size hotSpotSize(200, 200);
+# define ACTIVATE_THRESHOLD 0.25
 # define DEFAULT_JUMP_STRENGTH 15
+const int THRESHOLDING = hotSpotSize.height*hotSpotSize.width*ACTIVATE_THRESHOLD;
 bool jumpLock = false;
 
 // Global variables for measuring time (in milli-seconds)
@@ -139,20 +141,26 @@ void detectAction() {
         cap.read(frame);
         cvtColor(frame, bkFrame, CV_BGR2GRAY);
         absdiff(bkFrame, refFrame, diff);
-        //  threshold(diff, diff, 30, 255, CV_THRESH_BINARY);
+//        threshold(diff, diff, 1, 255, CV_THRESH_BINARY);
         
+        rectangle(diff, Point(3, 3), Point(200, 200), Scalar(255), 3, 8, 0);
+        rectangle(diff, Point(3, 517), Point(200, 717), Scalar(255), 3, 8, 0);
         imshow("FrameDifference", diff);
         double v1, v2;
         Mat tmp = Mat::zeros(defaultSize, CV_8UC1);
         
         tmp = hotSpot_up.mul(diff/255);
+//        imshow("up", tmp);
         v1 = sum(tmp)[0]/255;
+
         tmp = hotSpot_down.mul(diff/255);
+//        imshow("down", tmp);
         v2 = sum(tmp)[0]/255;
-        if (v1 > 100*defaultSize.width*ACTIVATE_THRESHOLD){
+        cout<<v2<<endl;
+        if (v1 > THRESHOLDING){
             cout<<"uppp "<< v1 <<endl;
             myKeysForCV('w');
-        } else if(v2 > 100*defaultSize.width*0.3) {
+        } else if(v2 > THRESHOLDING) {
             cout<<"DOWNNNNNN"<< v2 <<endl;
             myKeysForCV('s');
         } else {
@@ -310,7 +318,7 @@ void up(int value)
     whichPic = 2;
     if (value < 5) {
         isJumping = true;
-        if (picY < screenHeight - 50)
+        if (picY < screenHeight - 52)
             picY += jump_strength--;
         value++;
         glutTimerFunc(40, up, value);
@@ -472,6 +480,7 @@ void init()
 
     hotSpot_up = imread("image/hot_up.png", CV_LOAD_IMAGE_GRAYSCALE);
     hotSpot_down = imread("image/hot_down.png", CV_LOAD_IMAGE_GRAYSCALE);
+//    imshow("ll", hotSpot_up);
 }
 
 int main(int argc, char **argv)
