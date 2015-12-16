@@ -4,7 +4,7 @@
 --
 
 #### Ref
-Oringin game fork from my another [repo](https://github.com/SSARCandy/Ultimate-Shooting-Flappy-Bird).  
+Origin game fork from my another [repo](https://github.com/SSARCandy/Ultimate-Shooting-Flappy-Bird).  
 In this repo, I modify the game goal to have better fit with CV input.
 
 #### Build
@@ -29,8 +29,8 @@ The gameScore will +1 when you dodge an enemy bird.
 #### Control：
  - With Keyboard:
     - START: `SPACE`
-    - UP: `W/w`
-    - DOWN: `S/s`
+    - UP: `W`, `w`
+    - DOWN: `S`, `s`
  - With webcam(CV):
     - UP: `Move your hand to top area`
     - DOWN: `Move your hand to bottom area`
