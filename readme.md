@@ -38,7 +38,6 @@ The gameScore will +1 when you dodge an enemy bird.
 
 #### ScreenShot
 ![img](demo/demo1.JPG)
-![img](demo/demo3.JPG)
 ![img](demo/demo2.JPG)
 
 
