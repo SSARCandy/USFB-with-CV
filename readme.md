@@ -37,9 +37,8 @@ The gameScore will +1 when you dodge an enemy bird.
 
 
 #### ScreenShot
-![img](demo/demo1.JPG)
-![img](demo/demo2.JPG)
+![img](https://raw.githubusercontent.com/SSARCandy/USFB-with-CV/master/demo/demo1.JPG)
+![img](https://raw.githubusercontent.com/SSARCandy/USFB-with-CV/master/demo/demo2.JPG)
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/SSARCandy/usfb-with-cv/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 Tag: openGL, glut, 2D game, flappy bird, openCV, background-subtraction
